@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XBRL XRay — On-Prem User Guide</title>
+  <style>
+    :root {
+      --navy: #1f4e78;
+      --navy-dark: #163a5a;
+      --text: #222;
+      --muted: #555;
+      --border: #d9e2ec;
+      --bg: #f7fafc;
+      --green-bg: #eef7ee;
+      --green-bd: #b7d7b7;
+      --amber-bg: #fff8e1;
+      --amber-bd: #e0c36a;
+      --code-bg: #f3f6f9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Segoe UI, Verdana, Geneva, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text);
+      background: #fff;
+    }
+    .topbar {
+      background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+      color: #ffffff;
+      padding: 28px 24px 22px;
+    }
+    .topbar .wrap { max-width: 980px; margin: 0 auto; }
+    .topbar h1 {
+      margin: 0 0 6px;
+      font-size: 28px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+    }
+    .topbar p {
+      margin: 0;
+      max-width: 46em;
+      color: #ffffff;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 4px 10px;
+      border: 1px solid rgba(255,255,255,.45);
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px 48px; }
+    nav.toc {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 22px 0 28px;
+    }
+    nav.toc h2 { margin: 0 0 8px; font-size: 15px; color: var(--navy); }
+    nav.toc ol { margin: 0; padding-left: 1.3em; }
+    nav.toc a { color: var(--navy); text-decoration: none; }
+    nav.toc a:hover { text-decoration: underline; }
+    h2 {
+      color: var(--navy);
+      font-size: 22px;
+      margin: 36px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--border);
+    }
+    h3 { color: var(--navy); font-size: 17px; margin: 22px 0 8px; }
+    h4 { color: var(--navy-dark); font-size: 15px; margin: 16px 0 6px; }
+    p, li { color: var(--text); }
+    .muted { color: var(--muted); }
+    .flow {
+      margin: 12px 0 18px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .flow img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 10px 0 16px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--navy); color: #fff; font-weight: 600; }
+    tr:nth-child(even) td { background: #f9fbfd; }
+    code, kbd {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.92em;
+      background: var(--code-bg);
+      padding: 1px 5px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+    }
+    pre {
+      background: #1e2936;
+      color: #e8eef5;
+      border-radius: 8px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    pre code {
+      background: none;
+      border: 0;
+      padding: 0;
+      color: inherit;
+      font-size: inherit;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 12px 0 18px;
+      background: var(--bg);
+    }
+    .card.green { background: var(--green-bg); border-color: var(--green-bd); }
+    .card.amber { background: var(--amber-bg); border-color: var(--amber-bd); }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 720px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .topbar h1 { font-size: 22px; }
+    }
+    ul.tight li { margin: 4px 0; }
+    .footer {
+      margin-top: 40px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    a { color: var(--navy); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <h1>XBRL XRay</h1>
+      <p>
+        On-prem guide for validating XBRL / iXBRL filings and producing
+        review-ready Validation Logs, HTML reports, filing diffs, and taxonomy diffs.
+        Suitable for analyst review and daily CI over delivery outputs.
+      </p>
+      <span class="badge">On-prem · Offline by default · CI-ready</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#process-flow">Process flow</a></li>
+        <li><a href="#capabilities">Capabilities</a></li>
+        <li><a href="#requirements">Requirements &amp; installation</a></li>
+        <li><a href="#run">How to run</a></li>
+        <li><a href="#outputs">Outputs</a></li>
+        <li><a href="#validation-log">Validation Log</a></li>
+        <li><a href="#html-report">HTML Report</a></li>
+        <li><a href="#taxonomy-diff">TaxonomyDiff</a></li>
+        <li><a href="#xbrl-diff">XBRLDiff</a></li>
+        <li><a href="#workflow">Typical workflow</a></li>
+        <li><a href="#ci">Daily CI usage</a></li>
+      </ol>
+    </nav>
+
+    <section id="process-flow">
+      <h2>Process flow</h2>
+      <div class="flow">
+        <img src="XBRLXray_Process_Flow.png" alt="XBRL XRay process flow diagram">
+      </div>
+      <table>
+        <thead>
+          <tr><th>Stage</th><th>What happens</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Inputs</strong></td>
+            <td>
+              Filings from <code>XBRL/</code> (<code>.xbrl</code>, iXBRL, or <code>.zip</code>) and taxonomy packages from <code>Taxonomy/</code>.
+              CLI or daily CI jobs scan delivery outputs. Modes: <strong>validate</strong>, <code>--xbrl-diff</code>, <code>--taxonomy-diff</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Resolve &amp; load</strong></td>
+            <td>
+              Bare filenames resolve under <code>XBRL/</code> or <code>Taxonomy/</code>.
+              Taxonomy is selected from the instance <code>schemaRef</code>; EBA-style filings also auto-load the matching <strong>Dictionary</strong> companion.
+              Validation runs offline by default (<code>--online</code> to allow downloads).
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Validate</strong></td>
+            <td>Structural and formula/DQ checks run. Stats, cell coverage, and fact→cell mapping are collected.</td>
+          </tr>
+          <tr>
+            <td><strong>Outputs (validate)</strong></td>
+            <td><code>Validation_Log.xml</code>, <code>Validation_Log.html</code>, <code>HTML_Report/</code>, <code>XBRLXray_Report.html</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>Outputs (XBRLDiff)</strong></td>
+            <td><code>XBRLDiff_Report.html</code> plus <code>Report_A/</code> and <code>Report_B/</code> logs and HTML (yellow = changed, green = added).</td>
+          </tr>
+          <tr>
+            <td><strong>Outputs (TaxonomyDiff)</strong></td>
+            <td><code>TaxonomyDiff_Report.html</code> — Concepts, Dimensions, Rules, Entry Points, Report Layout.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card amber">
+        <strong>Exit codes:</strong>
+        <code>0</code> pass ·
+        <code>1</code> validation fail ·
+        <code>2</code> setup / runtime error
+      </div>
+    </section>
+
+    <section id="capabilities">
+      <h2>Capabilities</h2>
+      <table>
+        <thead><tr><th>Capability</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Automatic taxonomy</strong></td><td>Selects matching package from <code>Taxonomy/</code> via <code>schemaRef</code>. For EBA-style filings, also loads the Dictionary companion (reporting frameworks alone leave report cells empty).</td></tr>
+          <tr><td><strong>Structural + rule validation</strong></td><td>Separates taxonomy/dimension/schema issues from formula / DQ assertion failures.</td></tr>
+          <tr><td><strong>Validation Log</strong></td><td>Stats, coverage, root-cause tree, troubleshooting, and Cell Detail (<code>row|col</code>).</td></tr>
+          <tr><td><strong>HTML table report</strong></td><td>Taxonomy tables with exact instance lexical values.</td></tr>
+          <tr><td><strong>Cell tooltips</strong></td><td>Hover/focus any data cell for metric, dimensions, and coordinates like <code>[0760, 0010]</code>.</td></tr>
+          <tr><td><strong>Z-axis banners</strong></td><td>Clear banners for multi-value Z slices (e.g. currency).</td></tr>
+          <tr><td><strong>XBRLDiff</strong></td><td>Compare two filings: Added / Removed / Changed / Unchanged; highlight Report B cells.</td></tr>
+          <tr><td><strong>TaxonomyDiff</strong></td><td>Compare two taxonomy packages: Concepts, Dimensions, Rules, Entry Points, Report Layout.</td></tr>
+          <tr><td><strong>Zip instances</strong></td><td>Accepts compressed filings and extracts the XBRL/iXBRL member automatically.</td></tr>
+          <tr><td><strong>Bare filenames</strong></td><td><code>--xbrl</code>, <code>--xbrl-diff</code>, and <code>--taxonomy-diff</code> resolve bare names from <code>XBRL/</code> or <code>Taxonomy/</code>.</td></tr>
+          <tr><td><strong>CI-ready</strong></td><td>Batch mode and exit codes support daily CI jobs over every delivery output.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="requirements">
+      <h2>Requirements &amp; installation</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-top:0">Requirements</h3>
+          <ul class="tight">
+            <li><strong>Python 3.10+</strong> (tested with 3.13)</li>
+            <li>Taxonomy package zip(s) in <code>Taxonomy/</code></li>
+            <li>XBRL/iXBRL filings in <code>XBRL/</code> (or explicit paths)</li>
+          </ul>
+        </div>
+        <div class="card green">
+          <h3 style="margin-top:0">Folder layout</h3>
+<pre><code>XBRLXray/
+  XBRL/
+  Taxonomy/
+  Output/
+  validate_xbrl.py
+  XBRLXray_Process_Flow.png
+  ReadMe.html
+  ReadMe.md</code></pre>
+        </div>
+      </div>
+
+      <h3>Installation</h3>
+      <p class="muted">From the <code>XBRLXray</code> folder on the on-prem host:</p>
+<pre><code>py -3 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+py -3 -m pip install -r requirements.txt</code></pre>
+
+      <h3>Compressed (zip) instances</h3>
+      <p>Place the zip in <code>XBRL/</code> or pass it with <code>--instance</code> / <code>--xbrl</code>. XBRL XRay extracts the member automatically (prefers <code>.xbrl</code>, then <code>.xhtml</code>/<code>.html</code>, then <code>.xml</code>).</p>
+<pre><code>py -3 validate_xbrl.py -i XBRL\big-filing.zip --no-html-report</code></pre>
+    </section>
+
+    <section id="run">
+      <h2>How to run</h2>
+
+      <h3>Batch mode (all files in <code>XBRL/</code>)</h3>
+<pre><code>py -3 validate_xbrl.py</code></pre>
+
+      <h3>Single file</h3>
+      <p>Bare names resolve from <code>XBRL/</code>:</p>
+<pre><code>py -3 validate_xbrl.py --xbrl "PRA101 Capital Plus.xbrl"
+py -3 validate_xbrl.py -i ad.xbrl</code></pre>
+
+      <h3>XBRLDiff (two filings)</h3>
+<pre><code>py -3 validate_xbrl.py --xbrl-diff CC_PreFix.xbrl CC_PostFix.xbrl
+py -3 validate_xbrl.py --xbrl-diff "ad.xbrl" "ad - Copy.xbrl"</code></pre>
+
+      <h3>TaxonomyDiff (old vs new taxonomy)</h3>
+      <p>1st = old/existing, 2nd = new/upcoming. Bare names resolve from <code>Taxonomy/</code>:</p>
+<pre><code>py -3 validate_xbrl.py --taxonomy-diff boe-statistics-taxonomy-v130.zip boe-statistics-taxonomy-v131.zip</code></pre>
+
+      <h3>Command-line options</h3>
+      <table>
+        <thead><tr><th>Option</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>--xbrl</code></td><td>File (single run) or folder of files. Bare names → <code>XBRL/</code>.</td></tr>
+          <tr><td><code>--instance</code> / <code>-i</code></td><td>Same as <code>--xbrl &lt;file&gt;</code>.</td></tr>
+          <tr><td><code>--taxonomy-diff OLD NEW</code></td><td>Compare two taxonomy <code>.zip</code> packages. Bare names → <code>Taxonomy/</code>.</td></tr>
+          <tr><td><code>--xbrl-diff FILE_A FILE_B</code></td><td>Compare two filings (Report A vs Report B).</td></tr>
+          <tr><td><code>--xbrl-dir</code></td><td>Batch input folder (default: <code>./XBRL</code>).</td></tr>
+          <tr><td><code>--taxonomy-dir</code></td><td>Taxonomy zip folder (default: <code>./Taxonomy</code>).</td></tr>
+          <tr><td><code>--output-dir</code></td><td>Output root (default: <code>./Output</code>).</td></tr>
+          <tr><td><code>--online</code></td><td>Allow internet downloads (default: offline).</td></tr>
+          <tr><td><code>--no-html-report</code></td><td>Skip HTML table report (validation logs still written).</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="outputs">
+      <h2>Outputs</h2>
+
+      <h3>Single / batch validation</h3>
+<pre><code>Output/
+  &lt;fileStem&gt;/
+    XBRLXray_Report.html     ← open this first
+    Validation_Log.html
+    Validation_Log.xml
+    HTML_Report/
+      index.html
+      ...
+    _extracted/              ← only when input was a .zip</code></pre>
+      <p>Open <code>Output/&lt;fileStem&gt;/XBRLXray_Report.html</code> first — it links into <code>HTML_Report/</code> and the Validation Log.</p>
+
+      <h3>XBRLDiff</h3>
+<pre><code>Output/
+  XBRLDiff_&lt;A&gt;_vs_&lt;B&gt;/
+    XBRLDiff_Report.html
+    Report_A/
+    Report_B/</code></pre>
+
+      <h3>TaxonomyDiff</h3>
+<pre><code>Output/
+  TaxonomyDiff_&lt;old&gt;_vs_&lt;new&gt;/
+    TaxonomyDiff_Report.html</code></pre>
+    </section>
+
+    <section id="validation-log">
+      <h2>Validation Log (<code>Validation_Log.html</code>)</h2>
+      <p>Human-readable ERROR-level findings. <code>Validation_Log.xml</code> is the machine-readable companion used to drive the HTML.</p>
+
+      <h3>Section order</h3>
+<pre><code>Validation Log
+├── Taxonomy applied (includes Instance path + companion packages)
+├── Validation rule stats
+├── Cell coverage
+├── Error Root-Cause Analysis
+├── Structural Error(s)
+└── Validation rule failures</code></pre>
+
+      <h3>1. Taxonomy applied</h3>
+      <table>
+        <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Instance</strong></td><td>Path of the filing validated.</td></tr>
+          <tr><td><strong>Taxonomy applied / name / version</strong></td><td>Package identity used for validation.</td></tr>
+          <tr><td><strong>Package file / path</strong></td><td>Zip on disk under <code>Taxonomy/</code>.</td></tr>
+          <tr><td><strong>Companion packages</strong></td><td>Extra packages auto-loaded (e.g. EBA Dictionary).</td></tr>
+          <tr><td><strong>Matched entry point</strong></td><td>Entry point resolved from the instance.</td></tr>
+          <tr><td><strong>Instance schemaRef</strong></td><td>Schema reference found in the filing.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>2. Validation rule stats</h3>
+      <table>
+        <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Validation rules (total)</strong></td><td>Assertions present in the applied taxonomy/formula set.</td></tr>
+          <tr><td><strong>Rules checked</strong></td><td>Assertions that fired at least once for this filing.</td></tr>
+          <tr><td><strong>Rules passed / failed</strong></td><td>Checked rules with no failures / with one or more failures.</td></tr>
+          <tr><td><strong>Evaluations passed / failed</strong></td><td>Individual assertion evaluation counts.</td></tr>
+          <tr><td><strong>Errors / Warnings</strong></td><td>Message counts for this file.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3. Cell coverage</h3>
+      <table>
+        <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Cell coverage %</strong></td><td><code>populated ÷ report cells</code>.</td></tr>
+          <tr><td><strong>Report cells</strong></td><td>Cells defined by taxonomy tables.</td></tr>
+          <tr><td><strong>Populated</strong></td><td>Cells with a reported fact (these are what validation can check).</td></tr>
+          <tr><td><strong>Empty</strong></td><td>No fact for that metric/dimension combination — not validated for that cell.</td></tr>
+          <tr><td><strong>Instance facts</strong></td><td>Total facts in the XBRL instance.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>4. Error Root-Cause Analysis</h3>
+<pre><code>├── 42 errors -> Missing dimension
+├── 25 errors -> Invalid taxonomy concept
+├── 18 errors -> Incorrect value
+├── 10 errors -> Missing mandatory fact
+└── 5 errors  -> Calculation mismatch</code></pre>
+      <table>
+        <thead><tr><th>Bucket</th><th>Typical meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Missing dimension</strong></td><td>Dimension / hypercube / axis mismatch.</td></tr>
+          <tr><td><strong>Invalid taxonomy concept</strong></td><td>Concept/element not in DTS or unknown element.</td></tr>
+          <tr><td><strong>Incorrect value</strong></td><td>Formula / value assertion failed.</td></tr>
+          <tr><td><strong>Missing mandatory fact</strong></td><td>Existence / mandatory reporting assertion failed.</td></tr>
+          <tr><td><strong>Calculation mismatch</strong></td><td>Calculation linkbase / summation inconsistency.</td></tr>
+          <tr><td><strong>Other</strong></td><td>Did not match the buckets above.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>5–6. Structural errors &amp; rule failures</h3>
+      <p>Structural issues are taxonomy/dimension/schema problems — fix these before relying on formula results for the same cells. Rule failures are formula / DQ assertions. Both include Root cause, detail, and Affected fact(s).</p>
+
+      <h3>Affected fact columns</h3>
+      <table>
+        <thead><tr><th>Column</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Label / QName / Value</strong></td><td>Concept label, qualified name, reported value.</td></tr>
+          <tr><td><strong>Context</strong></td><td><code>contextRef</code> id.</td></tr>
+          <tr><td><strong>Cell Detail</strong></td><td>Report coordinates, e.g. <code>0760|0010</code>.</td></tr>
+          <tr><td><strong>Line</strong></td><td>Source line in the instance when available.</td></tr>
+          <tr><td><strong>Dimensions</strong></td><td>(Structural) Axis / member pairs on the fact.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="html-report">
+      <h2>HTML Report</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>XBRLXray_Report.html</code></td><td>Convenience index next to validation logs.</td></tr>
+          <tr><td><code>HTML_Report/index.html</code></td><td>Table menu for all rendered report tables.</td></tr>
+          <tr><td><strong>Exact values</strong></td><td>Shows XBRL lexical values (not rounded display).</td></tr>
+          <tr><td><strong>Cell tooltips</strong></td><td>Metric, dimensions, and <code>[R, C]</code> coordinates.</td></tr>
+          <tr><td><strong>Z-axis banners</strong></td><td>Marks which Z slice you are viewing.</td></tr>
+          <tr><td><strong>Scroll container</strong></td><td>Wide/tall tables scroll inside the viewport.</td></tr>
+        </tbody>
+      </table>
+      <p>In <strong>XBRLDiff</strong> mode on Report B: <strong>yellow</strong> = changed, <strong>green</strong> = added.</p>
+    </section>
+
+    <section id="taxonomy-diff">
+      <h2>TaxonomyDiff</h2>
+      <p>Produced by <code>--taxonomy-diff OLD_TAXONOMY NEW_TAXONOMY</code>.</p>
+      <table>
+        <thead><tr><th>Section</th><th>Counts</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Concepts</strong></td><td>Added / Removed / Changed</td></tr>
+          <tr><td><strong>Dimensions</strong></td><td>Added / Removed</td></tr>
+          <tr><td><strong>Validation Rules</strong></td><td>Added / Removed / Changed</td></tr>
+          <tr><td><strong>Entry Points</strong></td><td>Added / Removed / Changed</td></tr>
+          <tr><td><strong>Report Layout</strong></td><td>Yes/No overall, plus Added / Removed / Modified tables</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="xbrl-diff">
+      <h2>XBRLDiff</h2>
+      <p>Produced by <code>--xbrl-diff FILE_A FILE_B</code>.</p>
+      <p><strong>Fact identity:</strong> concept + context (entity / period / dimensions) + unit.</p>
+      <table>
+        <thead><tr><th>Metric</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Added Facts</strong></td><td>Present in B only.</td></tr>
+          <tr><td><strong>Removed Facts</strong></td><td>Present in A only.</td></tr>
+          <tr><td><strong>Changed Facts</strong></td><td>Same identity in A and B, different value.</td></tr>
+          <tr><td><strong>Unchanged</strong></td><td>Same identity and same value in both.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="workflow">
+      <h2>Typical workflow</h2>
+      <ol>
+        <li>Put taxonomy zips in <code>Taxonomy/</code> and filings in <code>XBRL/</code>.</li>
+        <li>Run <code>py -3 validate_xbrl.py --xbrl YourFiling.xbrl</code>.</li>
+        <li>Open <code>Output/&lt;stem&gt;/XBRLXray_Report.html</code> to browse tables and tooltips.</li>
+        <li>Open <code>Validation_Log.html</code> — start with Root-Cause Analysis, then structural errors, then rule failures; use Cell Detail to locate <code>[row, col]</code>.</li>
+        <li>To check a fix: <code>--xbrl-diff Before.xbrl After.xbrl</code>.</li>
+        <li>For taxonomy upgrades: <code>--taxonomy-diff old.zip new.zip</code>.</li>
+      </ol>
+    </section>
+
+    <section id="ci">
+      <h2>Daily CI usage</h2>
+      <div class="card green">
+        <p style="margin-top:0">
+          Point <code>--xbrl-dir</code> (or drop files into <code>XBRL/</code>) at each delivery output folder,
+          run batch validation on a schedule, publish <code>Output/</code> reports as build artifacts,
+          and gate the pipeline on exit code <code>0</code>/<code>1</code>/<code>2</code>.
+        </p>
+<pre><code>py -3 validate_xbrl.py --xbrl-dir \\share\deliveries\today --output-dir \\share\xbrlxray\today</code></pre>
+      </div>
+    </section>
+
+    <p class="footer">
+      XBRL XRay — on-prem user guide. Open this file locally next to
+      <code>XBRLXray_Process_Flow.png</code>. Companion Markdown source: <code>ReadMe.md</code>.
+    </p>
+  </main>
+</body>
+</html>
